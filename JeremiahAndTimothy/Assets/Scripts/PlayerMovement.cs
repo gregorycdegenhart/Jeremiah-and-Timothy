@@ -19,6 +19,11 @@ public class PlayerMovement : MonoBehaviour
 
     private bool canMove = true;
 
+    private float startPositionX = -12.69f;
+    private float startPositionY = 0.736f;
+    private float startPositionZ = 2.24f;
+
+
     void Start()
     {
         characterController = GetComponent<CharacterController>();
@@ -59,6 +64,15 @@ public class PlayerMovement : MonoBehaviour
             rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
             transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
+        }
+
+    }
+
+    void OnTriggerStay (Collider other)
+    {
+        if(other.gameObject.tag == "Guard")
+        {
+            transform.position = new Vector3(startPositionX, startPositionY, startPositionZ);
         }
     }
 }
