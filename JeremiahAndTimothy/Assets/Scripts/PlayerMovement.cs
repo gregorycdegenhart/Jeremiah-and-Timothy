@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
@@ -72,7 +73,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if(other.gameObject.tag == "Guard")
         {
-            transform.position = new Vector3(startPositionX, startPositionY, startPositionZ);
+            SceneManager.LoadScene("MainLevel");
         }
     }
 
@@ -80,7 +81,9 @@ public class PlayerMovement : MonoBehaviour
     {
         if(other.gameObject.tag == "Cheese")
         {
-            Debug.Log("You Win!");
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            SceneManager.LoadScene("MainMenu");
         }
     }
 }
