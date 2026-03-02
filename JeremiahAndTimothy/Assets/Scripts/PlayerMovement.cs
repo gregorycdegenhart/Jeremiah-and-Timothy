@@ -75,4 +75,12 @@ public class PlayerMovement : MonoBehaviour
             transform.position = new Vector3(startPositionX, startPositionY, startPositionZ);
         }
     }
+
+    void OnTriggerEnter (Collider other)
+    {
+        if(other.gameObject.tag == "Cheese")
+        {
+            Debug.Log("You Win!");
+        }
+    }
 }
