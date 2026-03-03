@@ -69,14 +69,6 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    void OnTriggerStay (Collider other)
-    {
-        if(other.gameObject.tag == "Guard")
-        {
-            SceneManager.LoadScene("MainLevel");
-        }
-    }
-
     void OnTriggerEnter (Collider other)
     {
         if(other.gameObject.tag == "Cheese")
@@ -84,6 +76,11 @@ public class PlayerMovement : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             SceneManager.LoadScene("MainMenu");
+        }
+
+        if(other.gameObject.tag == "Guard")
+        {
+            SceneManager.LoadScene("MainLevel");
         }
     }
 }
