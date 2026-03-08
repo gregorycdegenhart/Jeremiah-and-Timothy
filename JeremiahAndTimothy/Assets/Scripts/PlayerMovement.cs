@@ -82,5 +82,10 @@ public class PlayerMovement : MonoBehaviour
         {
             SceneManager.LoadScene("MainLevel");
         }
+
+        if(other.gameObject.tag == "Bean")
+        {
+            jumpPower = 11f;
+        }
     }
 }
