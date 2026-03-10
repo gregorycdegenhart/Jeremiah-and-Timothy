@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -24,12 +25,15 @@ public class PlayerMovement : MonoBehaviour
     private float startPositionY = 0.736f;
     private float startPositionZ = 2.24f;
 
-
+    public Camera jumpCamera;
+    private Camera MainCamera;
     void Start()
     {
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        MainCamera = GetComponentInChildren<Camera>();
+        jumpCamera.enabled = false;
     }
 
     void Update()
@@ -68,7 +72,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
     }
-
+    public Animator catsAnimator;
     void OnTriggerEnter (Collider other)
     {
         if(other.gameObject.tag == "Cheese")
@@ -80,7 +84,15 @@ public class PlayerMovement : MonoBehaviour
 
         if(other.gameObject.tag == "Guard")
         {
-            SceneManager.LoadScene("MainLevel");
+            MainCamera.enabled = false;
+            jumpCamera.enabled = true;
+            catsAnimator.SetBool("IsAttacking", true);
+            transform.LookAt(other.gameObject.transform);
+            Invoke("Reload", 2f);
         }
+    }
+    private void Reload()
+    {
+        SceneManager.LoadScene("MainLevel");
     }
 }
