@@ -16,6 +16,8 @@ public class CatAI : MonoBehaviour
 
     public float lookRadius = 10f;
 
+    public GameObject detectScreenUI;
+
     Transform target;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -27,7 +29,7 @@ public class CatAI : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {;
+    {
         Walking();
 
         float distance = Vector3.Distance(target.position, transform.position);
@@ -36,11 +38,19 @@ public class CatAI : MonoBehaviour
         {
             navMeshAgent.SetDestination(target.position);
 
+            detectScreenUI.SetActive(true);
+
             if (distance <= navMeshAgent.stoppingDistance)
             {
                 // Attack the target
                 FaceTarget();
+
             }
+        }
+
+        else
+        {
+            detectScreenUI.SetActive(false);
         }
     }
 
