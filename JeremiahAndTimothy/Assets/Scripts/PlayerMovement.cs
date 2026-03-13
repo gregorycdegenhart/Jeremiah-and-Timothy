@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -24,12 +25,22 @@ public class PlayerMovement : MonoBehaviour
     private float startPositionY = 0.736f;
     private float startPositionZ = 2.24f;
 
-
+    public Camera jumpCamera;
+    private Camera MainCamera;
+    public Animator mouseAnimator;
+    public AudioListener JumpAudioListen;
+    private AudioListener MainListen;
     void Start()
     {
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        MainCamera = GetComponentInChildren<Camera>();
+        JumpAudioListen = jumpCamera.GetComponent<AudioListener>();
+        MainListen = GetComponentInChildren<AudioListener>();
+        JumpAudioListen.enabled = false;
+        jumpCamera.enabled = false;
+        mouseAnimator = GetComponentInChildren<Animator>();
     }
 
     void Update()
@@ -43,32 +54,38 @@ public class PlayerMovement : MonoBehaviour
         float movementDirectionY = moveDirection.y;
         moveDirection = (forward * curSpeedX) + (right * curSpeedY);
 
+        
         if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
         {
             moveDirection.y = jumpPower;
+            mouseAnimator.SetBool("IsWalking", false);
+            mouseAnimator.SetBool("IsJumping", true);
         }
         else
         {
             moveDirection.y = movementDirectionY;
+
         }
 
         if (!characterController.isGrounded)
         {
             moveDirection.y -= gravity * Time.deltaTime;
+            mouseAnimator.SetBool("IsJumping", false);
         }
 
-        characterController.Move(moveDirection * Time.deltaTime);
 
+        characterController.Move(moveDirection * Time.deltaTime);
         if (canMove)
         {
+            
             rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
             rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
             transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
         }
-
+        if(characterController.velocity.x > 0.001f || characterController.velocity.z > 0.001f) { mouseAnimator.SetBool("IsWalking", true); } else { mouseAnimator.SetBool("IsWalking", false); }
     }
-
+    public Animator catsAnimator;
     void OnTriggerEnter (Collider other)
     {
         if(other.gameObject.tag == "Cheese")
@@ -80,12 +97,17 @@ public class PlayerMovement : MonoBehaviour
 
         if(other.gameObject.tag == "Guard")
         {
-            SceneManager.LoadScene("GameOverScreen");
+            MainListen.enabled = false;
+            MainCamera.enabled = false;
+            jumpCamera.enabled = true;
+            JumpAudioListen.enabled = true;
+            catsAnimator.SetBool("IsAttacking", true);
+            transform.LookAt(other.gameObject.transform);
+            //Invoke("Reload", 1f);
         }
-
-        if(other.gameObject.tag == "Bean")
-        {
-            jumpPower = 11f;
-        }
+    }
+    public void Reload()
+    {
+        SceneManager.LoadScene("MainLevel");
     }
 }
