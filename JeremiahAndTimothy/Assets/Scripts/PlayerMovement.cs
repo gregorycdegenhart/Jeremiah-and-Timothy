@@ -92,7 +92,7 @@ public class PlayerMovement : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            SceneManager.LoadScene("MainMenu");
+            SceneManager.LoadScene("WinScreen");
         }
 
         if(other.gameObject.tag == "Guard")
