@@ -82,5 +82,10 @@ public class PlayerMovement : MonoBehaviour
         {
             SceneManager.LoadScene("GameOverScreen");
         }
+
+        if(other.gameObject.tag == "Bean")
+        {
+            jumpPower = 11f;
+        }
     }
 }
