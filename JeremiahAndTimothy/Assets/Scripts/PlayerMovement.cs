@@ -30,6 +30,12 @@ public class PlayerMovement : MonoBehaviour
     public Animator mouseAnimator;
     public AudioListener JumpAudioListen;
     private AudioListener MainListen;
+
+    public AudioClip deathClip;
+    public AudioClip jumpClip;
+    public AudioSource source;
+    public float soundDelay;
+
     void Start()
     {
         characterController = GetComponent<CharacterController>();
@@ -60,6 +66,10 @@ public class PlayerMovement : MonoBehaviour
             moveDirection.y = jumpPower;
             mouseAnimator.SetBool("IsWalking", false);
             mouseAnimator.SetBool("IsJumping", true);
+            if (jumpPower > 5f)
+            {
+                source.PlayOneShot(jumpClip);
+            }
         }
         else
         {
@@ -103,11 +113,24 @@ public class PlayerMovement : MonoBehaviour
             JumpAudioListen.enabled = true;
             catsAnimator.SetBool("IsAttacking", true);
             transform.LookAt(other.gameObject.transform);
+            StartCoroutine(PlayAfterDelay());
             //Invoke("Reload", 1f);
         }
+
+        if(other.gameObject.tag == "Bean")
+        {
+            jumpPower = 11f;
+        }
     }
+
     public void Reload()
     {
         SceneManager.LoadScene("MainLevel");
+    }
+
+    private IEnumerator PlayAfterDelay()
+    {
+        yield return new WaitForSeconds(soundDelay);
+        source.PlayOneShot(deathClip);
     }
 }
